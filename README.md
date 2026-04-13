@@ -4,6 +4,7 @@ Todo: Will add readme when everything works
 
 ## Prerequisites
 - STM32CubeMX
+- STM32CubeProgrammer
 - CMake 3.22+
 - Ninja
 - arm-none-eabi-gcc
