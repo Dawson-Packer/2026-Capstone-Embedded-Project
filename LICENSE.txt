@@ -1,9 +1,15 @@
+Copyright (c) 2026 Dawson Packer
+All rights reserved.
 
+---
 
+Third Party Licenses
+--------------------
 
-
-
-# cubeide-sd-card
+[cubeide-sd-card]
+Portions of this software (FATFS/Target/user_diskio_spi.c and
+FATFS/Target/user_diskio_spi.h) and modifications to (FATFS/Target/user_diskio.c)
+are derived from cubeide-sd-card by kiwih (https://github.com/kiwih/cubeide-sd-card).
 
 Portions copyright (c) 2020 STMicroelectronics International N.V., all rights reserved.
 Portions copyright (C) 2014, ChaN, all rights reserved.
