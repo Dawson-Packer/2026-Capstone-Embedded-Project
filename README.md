@@ -2,14 +2,13 @@
 
 Todo: Will add readme when everything works
 
-## Setup
-
-### Prerequisites
+## Prerequisites
 - STM32CubeMX
-- CMake
+- CMake 3.22+
+- Ninja
 - arm-none-eabi-gcc
 
-### Setup
+## Setup
 1. Clone the repo
 ```bash
    git clone --recurse-submodules 
@@ -17,6 +16,11 @@ Todo: Will add readme when everything works
 2. Open `2026_GPS_Monitor.ioc` in STM32CubeMX and click **Generate Code**
 3. Build:
 ```bash
-   cmake -B build
-   cmake --build build
+# In DEBUG mode
+   cmake --preset Debug
+   cmake --build build --preset Debug
+# In RELEASE mode
+   cmake --preset Release
+   cmake --build build --preset Release
 ```
+4. Flash the firmware using STM32CubeProgrammer, using the binary in `build/<Debug|Release>/2026_GPS_Monitor.bin`
