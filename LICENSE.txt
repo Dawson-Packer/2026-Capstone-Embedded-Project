@@ -30,6 +30,8 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 
+---
+
 [cubeide-sd-card]
 Portions of this software (FATFS/Target/user_diskio_spi.c and
 FATFS/Target/user_diskio_spi.h) and modifications to (FATFS/Target/user_diskio.c)
