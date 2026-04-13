@@ -9,7 +9,7 @@ static const char datafile[9]  = "data.csv";
 
 static const char TAG[] = "filesystem";
 
-void Filesystem::Init()
+void Filesystem::Init(void)
 {
 
     if (!SDCard::Mount())
@@ -54,7 +54,7 @@ bool Filesystem::Write(record_t *record)
     return true;
 }
 
-void Filesystem::Deinit()
+void Filesystem::Deinit(void)
 {
     if (!SDCard::Unmount())
     {

@@ -20,5 +20,5 @@ namespace Notecard
 
     bool GetVoltage(float *volt_v);
 
-    void Send(record_t *record);
+    void Send(record_t *record, bool sync_now = true);
 } // namespace Notecard

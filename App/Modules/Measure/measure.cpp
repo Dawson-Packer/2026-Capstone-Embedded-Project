@@ -13,9 +13,9 @@ record_t Measure::Take(void)
 
     LOG_DBG(TAG, "Attempting to fetch GPS and time...");
     if (!Notecard::GetGPS(&record.latitude, &record.longitude, &timestamp,
-                          10000)) // TODO: 10 seconds timeout
+                          10000)) // TODO: Remove 10 seconds timeout
     {
-        LOG_WRN(TAG, "GPS fix timed out.");
+        LOG_WRN(TAG, "Failed to fetch GPS from Notecard.");
         record.latitude  = 0.0;
         record.longitude = 0.0;
         timestamp        = Notecard::GetTime();

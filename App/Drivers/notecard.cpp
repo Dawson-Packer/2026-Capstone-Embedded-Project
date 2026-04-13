@@ -227,7 +227,7 @@ bool Notecard::GetVoltage(float *volt_v)
     return true;
 }
 
-void Notecard::Send(record_t *record)
+void Notecard::Send(record_t *record, bool sync_now)
 {
     J *req = NoteNewRequest("note.add");
 
@@ -244,6 +244,9 @@ void Notecard::Send(record_t *record)
 
     NoteRequest(req);
 
-    J *sync_req = NoteNewRequest("hub.sync");
-    NoteRequest(sync_req);
+    if (sync_now)
+    {
+        J *sync_req = NoteNewRequest("hub.sync");
+        NoteRequest(sync_req);
+    }
 }

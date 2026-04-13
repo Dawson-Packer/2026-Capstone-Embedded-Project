@@ -4,9 +4,9 @@
 
 namespace Filesystem
 {
-    void Init();
+    void Init(void);
 
     bool Write(record_t *record);
 
-    void Deinit();
+    void Deinit(void);
 }; // namespace Filesystem

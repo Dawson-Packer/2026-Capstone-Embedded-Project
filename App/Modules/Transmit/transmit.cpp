@@ -10,6 +10,6 @@ void Transmit::Setup() { Notecard::Configure(24 * 60); /* 1/day */ }
 
 void Transmit::EnQueue(record_t *record)
 {
-    Notecard::Send(record);
+    Notecard::Send(record); // TODO: Add false to sync_now argument
     LOG_INF(TAG, "Enqueued newest record for transmission.");
 }
