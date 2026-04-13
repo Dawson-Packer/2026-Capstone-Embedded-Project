@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/dawson/Projects/Capstone Project/Blues_Alternative-B/build/Debug/cmake_install.cmake",
+		"/Users/dawson/Projects/Capstone Project/Blues_Alternative-B/build/Debug/cmake/stm32cubemx/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
