@@ -1,0 +1,15 @@
+# Generated library code
+Drivers/
+Middlewares/
+
+# Build output
+build/
+
+# CubeMX metadata
+.mxproject
+
+# note-c (handle as submodule separately)
+note-c/
+
+# macOS-specific files
+*.DS_Store
