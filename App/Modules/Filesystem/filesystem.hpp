@@ -1,17 +1,12 @@
 #pragma once
+#include "Utils/record.hpp"
 #include <stdint.h>
 
-namespace fs
+namespace Filesystem
 {
+    void Init();
 
-    class Filesystem
-    {
-      public:
-        Filesystem();
-        ~Filesystem();
+    bool Write(record_t *record);
 
-      private:
-        uint8_t    _initialized = 0;
-        const char datafile[9]  = "data.csv";
-    };
-} // namespace fs
+    void Deinit();
+}; // namespace Filesystem

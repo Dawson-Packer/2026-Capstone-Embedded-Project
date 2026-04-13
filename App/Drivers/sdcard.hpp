@@ -12,13 +12,13 @@ namespace SDCard
         uint32_t available_KiB;
     } card_stats_t;
 
-    uint8_t Mount(void);
+    bool Mount(void);
 
-    uint8_t Unmount(void);
+    bool Unmount(void);
 
-    uint8_t GetStats(card_stats_t *data);
+    bool GetStats(card_stats_t *data);
 
-    uint8_t FileExists(const char *filename);
+    bool FileExists(const char *filename);
 
     FRESULT WriteFile(const char *filename, const void *data, size_t len);
 

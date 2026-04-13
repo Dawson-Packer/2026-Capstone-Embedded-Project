@@ -10,7 +10,7 @@ namespace SDCard
 
     static FATFS FatFs;
 
-    uint8_t Mount()
+    bool Mount()
     {
 
         HAL_Delay(1000);
@@ -21,13 +21,13 @@ namespace SDCard
         if (result != FR_OK)
         {
             LOG_DBG(TAG, "f_mount error while mounting: %i", result);
-            return 1;
+            return false;
         }
 
-        return 0;
+        return true;
     }
 
-    uint8_t Unmount()
+    bool Unmount()
     {
 
         FRESULT result;
@@ -37,13 +37,13 @@ namespace SDCard
         if (result != FR_OK)
         {
             LOG_DBG(TAG, "f_mount error while unmounting: %i", result);
-            return 1;
+            return false;
         }
 
-        return 0;
+        return true;
     }
 
-    uint8_t GetStats(card_stats_t *data)
+    bool GetStats(card_stats_t *data)
     {
         DWORD free_clusters;
 
@@ -54,16 +54,16 @@ namespace SDCard
         if (result != FR_OK)
         {
             LOG_DBG(TAG, "f_getfree error: %i", result);
-            return 1;
+            return false;
         }
 
         data->total_space_KiB = ((getFreeFs->n_fatent - 2) * getFreeFs->csize) / 2;
         data->available_KiB   = (free_clusters * getFreeFs->csize) / 2;
 
-        return 0;
+        return true;
     }
 
-    uint8_t FileExists(const char *filename)
+    bool FileExists(const char *filename)
     {
         FILINFO info;
         FRESULT res = f_stat(filename, &info);
@@ -89,6 +89,7 @@ namespace SDCard
             res = FR_DISK_ERR;
         }
 
+        f_sync(&file);
         f_close(&file);
         return res;
     }
@@ -112,6 +113,7 @@ namespace SDCard
             res = FR_DISK_ERR;
         }
 
+        f_sync(&file);
         f_close(&file);
         return res;
     }

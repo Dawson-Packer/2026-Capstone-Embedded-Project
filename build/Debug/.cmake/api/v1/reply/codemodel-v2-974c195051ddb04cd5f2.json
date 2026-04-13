@@ -7,7 +7,7 @@
 				{
 					"directoryIndex" : 1,
 					"id" : "stm32cubemx::@768a070a0fe75716b479",
-					"jsonFile" : "target-stm32cubemx-Debug-6802f333714507ef8d9c.json",
+					"jsonFile" : "target-stm32cubemx-Debug-33a0f1de924c0569b359.json",
 					"name" : "stm32cubemx",
 					"projectIndex" : 0
 				}
@@ -80,21 +80,21 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Blues_Alternative-B::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Blues_Alternative-B-Debug-356168fb78346b0ac292.json",
+					"jsonFile" : "target-Blues_Alternative-B-Debug-5dfe70232d17020255ac.json",
 					"name" : "Blues_Alternative-B",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 1,
 					"id" : "FatFs::@768a070a0fe75716b479",
-					"jsonFile" : "target-FatFs-Debug-d52123661b74c3b25834.json",
+					"jsonFile" : "target-FatFs-Debug-a0fb5c071015d9e55549.json",
 					"name" : "FatFs",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 1,
 					"id" : "STM32_Drivers::@768a070a0fe75716b479",
-					"jsonFile" : "target-STM32_Drivers-Debug-db816fa0e5e4a974f048.json",
+					"jsonFile" : "target-STM32_Drivers-Debug-7c0283918f9fb66123a2.json",
 					"name" : "STM32_Drivers",
 					"projectIndex" : 0
 				}

@@ -57,6 +57,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/retarget.c
 
     App/app.cpp
+    App/Modules/Power/power.cpp
+    App/Modules/Measure/measure.cpp
+    App/Modules/Transmit/transmit.cpp
     App/Modules/Filesystem/filesystem.cpp
 
     App/Drivers/sdcard.cpp
@@ -115,6 +118,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
 
     # Add user defined libraries
+)
+
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
+    "-u" "_printf_float"
 )
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
