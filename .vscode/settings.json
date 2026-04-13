@@ -1,0 +1,10 @@
+{
+    "C_Cpp.exclusionPolicy": "checkFilesAndFolders",
+    "C_Cpp.files.exclude": {
+        "**/.vscode": true,
+        "**/.vs": true,
+        "**/Drivers": true,
+        "**/Middlewares": true,
+        "**/build": true,
+    }
+}
