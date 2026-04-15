@@ -6,6 +6,7 @@
 #define ANSI_BRIGHT_CYAN   "\033[96m"
 #define ANSI_BRIGHT_GREEN  "\033[92m"
 #define ANSI_BRIGHT_RED    "\033[91m"
+#define ANSI_RED           "\033[31m"
 #define ANSI_BRIGHT_WHITE  "\033[97m"
 #define ANSI_BRIGHT_YELLOW "\033[93m"
 #define ANSI_BRIGHT_GRAY   "\033[90m"

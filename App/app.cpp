@@ -6,7 +6,7 @@
 #include "Utils/logging.hpp"
 #include <stdio.h>
 
-#define TRANSMIT_INTERVAL_MINS 1
+#define TRANSMIT_INTERVAL_MINS 26 /* 4 minutes timeout, so 30 min total */
 
 static void Task_Measure(void)
 {
@@ -17,10 +17,18 @@ static void Task_Measure(void)
 
 extern "C" void App_Init(void)
 {
-    printf(ANSI_RESET);
+    printf(ANSI_RED "App initializing..." ANSI_RESET "\r\n");
 
     Transmit::Init();
     Filesystem::Init();
+
+    // if (Power::ResetAfterBrownOut())
+    // {
+    //     printf(ANSI_BRIGHT_GRAY "Brown-out occurred. Board successfully reset.");
+    //     power_event_t event = ::BROWN_OUT;
+
+    //     Transmit::Notify(&event);
+    // }
 }
 extern "C" void App_Run(void)
 {

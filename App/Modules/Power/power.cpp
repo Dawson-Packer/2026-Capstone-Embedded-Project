@@ -11,6 +11,13 @@ bool Power::WokeFromStandby(void)
     return woke;
 }
 
+bool Power::ResetAfterBrownOut(void)
+{
+    bool reset = __HAL_RCC_GET_FLAG(RCC_FLAG_BORRST) == RESET;
+    __HAL_RCC_CLEAR_RESET_FLAGS();
+    return reset;
+}
+
 void Power::EnterStandby(uint32_t next_wakeup_seconds)
 {
     HAL_RTCEx_DeactivateWakeUpTimer(&hrtc);

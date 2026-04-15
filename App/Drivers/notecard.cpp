@@ -111,28 +111,76 @@ void Notecard::Configure(uint32_t sync_interval_minutes)
     JAddNumberToObject(req, "inbound", 0); /* Disable inbound syncs */
     NoteRequest(req);
 
+    req = NoteNewRequest("card.wireless");
+    JAddStringToObject(req, "apn", GCI_APN);
+    JAddStringToObject(req, "method", "dual-secondary-primary"); /* Use GCI first, then AT&T */
+    NoteRequest(req);
+
     req = NoteNewRequest("card.location.mode");
     JAddStringToObject(req, "mode", "off");
+    NoteRequest(req);
+
+    /* Configure penalty */
+    req = NoteNewRequest("card.wireless.penalty");
+    JAddBoolToObject(req, "set", true);
+    JAddNumberToObject(req, "min", 60);     // minimum penalty: 60 minutes
+    JAddNumberToObject(req, "add", 60);     // add 60 minutes per failure
+    JAddNumberToObject(req, "rate", 1.0);   // multiplier (1.0 = no multiplication)
+    JAddNumberToObject(req, "max", 60 * 3); // maximum penalty: 3 hours
     NoteRequest(req);
 
     LOG_DBG(TAG, "Notecard configured.");
 }
 
+bool Notecard::Sync(uint32_t timeout_ms)
+{
+    J *sync = NoteNewRequest("hub.sync");
+    NoteRequest(sync); /* Sync now to get time, etc. */
+
+    uint32_t start = HAL_GetTick();
+
+    while (HAL_GetTick() - start < timeout_ms)
+    {
+        J *req = NoteNewRequest("hub.sync.status");
+        J *rsp = NoteRequestResponse(req);
+        if (rsp)
+        {
+            const char *status    = JGetString(rsp, "status");
+            bool        completed = status && strstr(status, "sync-end") != NULL;
+            NoteDeleteResponse(rsp);
+            if (completed)
+            {
+                LOG_DBG(TAG, "Sync complete.");
+                return true;
+            }
+        }
+        HAL_Delay(2000);
+    }
+
+    LOG_DBG(TAG, "Sync timed out.");
+    return false;
+}
+
 bool Notecard::GetGPS(double *lat, double *lon, uint32_t *timestamp, uint32_t timeout)
 {
+    bool success = true;
+
     J *en_req = NoteNewRequest("card.location.mode");
-    JAddStringToObject(en_req, "mode", "periodic");
-    JAddNumberToObject(en_req, "seconds", 1);
+    JAddStringToObject(en_req, "mode", "continuous");
+    // JAddNumberToObject(en_req, "seconds", 1);
     NoteRequest(en_req);
 
     HAL_Delay(2000); /* allow GNSS startup */
 
-    uint32_t start = HAL_GetTick();
-    J       *rsp   = NULL;
-    double   _lat  = 0.0;
-    double   _lon  = 0.0;
-    uint32_t _timestamp;
-    int      best_dop = 999;
+    uint32_t  start                 = HAL_GetTick();
+    J        *rsp                   = NULL;
+    double    _lat                  = 0.0;
+    double    _lon                  = 0.0;
+    uint32_t  _timestamp            = 0;
+    int       best_dop              = 999;
+    int       consecutive_inactives = 0;
+    const int MAX_INACTIVE          = 20;
+    // bool     valid_fix  = false;
 
     while (HAL_GetTick() - start < timeout)
     {
@@ -144,40 +192,62 @@ bool Notecard::GetGPS(double *lat, double *lon, uint32_t *timestamp, uint32_t ti
 
         if (rsp)
         {
-            _lat       = JGetNumber(rsp, "lat");
-            _lon       = JGetNumber(rsp, "lon");
-            _timestamp = JGetNumber(rsp, "time");
-            int dop    = JGetNumber(rsp, "dop");
-
-            const char *status = JGetString(rsp, "status");
+            double   new_lat      = JGetNumber(rsp, "lat");
+            double   new_lon      = JGetNumber(rsp, "lon");
+            uint32_t new_timetamp = JGetNumber(rsp, "time");
+            int      dop          = JGetNumber(rsp, "dop");
 
             if (dop < best_dop)
             {
-                best_dop = dop;
+                best_dop   = dop;
+                _lat       = new_lat;
+                _lon       = new_lon;
+                _timestamp = new_timetamp;
             }
 
-            bool valid_fix = _lat != 0 && _lon != 0 && dop < 10;
-
-            if (valid_fix)
+            const char *status = JGetString(rsp, "status");
+            if (strstr(status, "gps-inactive"))
             {
-                break;
+                consecutive_inactives++;
+                if (consecutive_inactives > MAX_INACTIVE)
+                {
+                    NoteDeleteResponse(rsp);
+                    LOG_DBG(TAG, "Too many Inactive responses. Quitting early.");
+                    _lat       = new_lat;
+                    _lon       = new_lon;
+                    _timestamp = new_timetamp;
+                    success    = false;
+                    break;
+                }
+            }
+            else
+            {
+                consecutive_inactives = 0;
             }
 
             NoteDeleteResponse(rsp);
+
+            if (new_lat != 0 && new_lon != 0 && dop < 15)
+            {
+                // valid_fix = true;
+                break;
+            }
         }
 
         HAL_Delay(2000);
     }
 
-    *lat       = _lat;
-    *lon       = _lon;
-    *timestamp = _timestamp;
-
     J *ds_req = NoteNewRequest("card.location.mode");
     JAddStringToObject(ds_req, "mode", "off");
     NoteRequest(ds_req);
 
-    return (*lat != 0 && *lon != 0);
+    *lat       = _lat;
+    *lon       = _lon;
+    *timestamp = _timestamp;
+
+    success = success && (*lat != 0 && *lon != 0);
+
+    return success;
 }
 
 uint32_t Notecard::GetTime(void)
@@ -189,7 +259,7 @@ uint32_t Notecard::GetTime(void)
 
     uint32_t t = static_cast<uint32_t>(JGetNumber(rsp, "time"));
 
-    NoteDeleteResponse(req);
+    NoteDeleteResponse(rsp);
     return t;
 }
 
@@ -239,6 +309,26 @@ void Notecard::Send(record_t *record, bool sync_now)
     JAddNumberToObject(body, "latitude", record->latitude);
     JAddNumberToObject(body, "longitude", record->longitude);
     JAddNumberToObject(body, "voltage", record->voltage);
+
+    JAddItemToObject(req, "body", body);
+
+    NoteRequest(req);
+
+    if (sync_now)
+    {
+        J *sync_req = NoteNewRequest("hub.sync");
+        NoteRequest(sync_req);
+    }
+}
+
+void Notecard::Send(power_event_t *event, bool sync_now)
+{
+    J *req = NoteNewRequest("note.add");
+
+    JAddStringToObject(req, "file", "status.qo"); /* Queue request to status.qo (outbound) file */
+    J *body = NoteNewBody();
+
+    JAddNumberToObject(body, "power_event", *event);
 
     JAddItemToObject(req, "body", body);
 

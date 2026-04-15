@@ -12,13 +12,10 @@ record_t Measure::Take(void)
     DateUtils::UTCTime utc_time;
 
     LOG_DBG(TAG, "Attempting to fetch GPS and time...");
-    if (!Notecard::GetGPS(&record.latitude, &record.longitude, &timestamp,
-                          10000)) // TODO: Remove 10 seconds timeout
+    if (!Notecard::GetGPS(&record.latitude, &record.longitude, &timestamp, 240000))
     {
-        LOG_WRN(TAG, "Failed to fetch GPS from Notecard.");
-        record.latitude  = 0.0;
-        record.longitude = 0.0;
-        timestamp        = Notecard::GetTime();
+        LOG_WRN(TAG, "Failed to fetch up-to-date GPS data from Notecard.");
+        timestamp = Notecard::GetTime();
     }
 
     DateUtils::epochToUtc(timestamp, &utc_time);

@@ -10,3 +10,8 @@ typedef struct
     double longitude;
     float  voltage;
 } record_t;
+
+typedef enum
+{
+    BROWN_OUT,
+} power_event_t;
